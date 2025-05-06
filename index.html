@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Peta Interaktif Provinsi Riau</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    #map-container {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+      position: relative;
+    }
+    #tooltip {
+      position: absolute;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      pointer-events: none;
+      font-size: 14px;
+      display: none;
+      z-index: 10;
+    }
+    svg path {
+      fill: #a0c4ff;
+      stroke: #333;
+      stroke-width: 0.8;
+      transition: fill 0.2s;
+      cursor: pointer;
+    }
+    svg path:hover {
+      fill: #4361ee;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map-container">
+  <div id="tooltip"></div>
+  <object id="svgMap" type="image/svg+xml" data="riau-map-responsive.svg"></object>
+</div>
+
+<script>
+const dataPerKabupaten = {
+  pekanbaru: { penduduk: "1.1 juta", luas: "632 km²", indeks: "Tinggi" },
+  dumai: { penduduk: "300 ribu", luas: "2.000 km²", indeks: "Sedang" },
+  kampar: { penduduk: "950 ribu", luas: "11.289 km²", indeks: "Tinggi" },
+  rokan_hulu: { penduduk: "550 ribu", luas: "7.588 km²", indeks: "Sedang" },
+  rokan_hilir: { penduduk: "600 ribu", luas: "8.881 km²", indeks: "Rendah" },
+  bengkalis: { penduduk: "700 ribu", luas: "7.793 km²", indeks: "Tinggi" },
+  siak: { penduduk: "450 ribu", luas: "8.556 km²", indeks: "Sedang" },
+  indragiri_hulu: { penduduk: "420 ribu", luas: "7.997 km²", indeks: "Rendah" },
+  indragiri_hilir: { penduduk: "630 ribu", luas: "13.532 km²", indeks: "Sedang" },
+  pelalawan: { penduduk: "550 ribu", luas: "13.408 km²", indeks: "Tinggi" },
+  kuantan_singingi: { penduduk: "320 ribu", luas: "7.656 km²", indeks: "Sedang" },
+  kepulauan_meranti: { penduduk: "190 ribu", luas: "3.623 km²", indeks: "Rendah" }
+};
+
+const tooltip = document.getElementById("tooltip");
+const svgObject = document.getElementById("svgMap");
+
+svgObject.addEventListener("load", function() {
+  const svgDoc = svgObject.contentDocument;
+  Object.keys(dataPerKabupaten).forEach(id => {
+    const region = svgDoc.getElementById(id);
+    if (region) {
+      region.addEventListener("mousemove", e => {
+        const data = dataPerKabupaten[id];
+        tooltip.innerHTML = `<strong>${id.replace(/_/g, ' ').toUpperCase()}</strong><br>
+          Penduduk: ${data.penduduk}<br>
+          Luas: ${data.luas}<br>
+          Indeks: ${data.indeks}`;
+        tooltip.style.left = (e.clientX + 10) + "px";
+        tooltip.style.top = (e.clientY + 10) + "px";
+        tooltip.style.display = "block";
+      });
+      region.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
